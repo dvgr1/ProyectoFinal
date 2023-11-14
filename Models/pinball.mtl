@@ -1,5 +1,15 @@
-# Blender 3.6.4 MTL File: 'None'
+# Blender 3.6.4 MTL File: 'pinball.blend'
 # www.blender.org
+
+newmtl Material
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.888451 0.964907 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
 
 newmtl Material.002
 Ns 250.000000
@@ -9,7 +19,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd ranuraMoneda.tga
+map_Kd D:/Escritorio/9no/CGIH/Lab/Proyecto/ProyectoFinal/Textures/ranuraMoneda.tga
 
 newmtl Material.003
 Ns 250.000000
@@ -19,7 +29,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd madera.tga
+map_Kd D:/Escritorio/9no/CGIH/Lab/Proyecto/ProyectoFinal/Textures/madera.tga
 
 newmtl Material.004
 Ns 250.000000
@@ -29,7 +39,17 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd metalCromado.tga
+map_Kd D:/Escritorio/9no/CGIH/Lab/Proyecto/ProyectoFinal/Textures/metalCromado.tga
+
+newmtl Material.005
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
 
 newmtl Material.006
 Ns 250.000000
@@ -39,14 +59,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd metalTubo.tga
-
-newmtl Material.008
-Ns 250.000000
-Ka 1.000000 1.000000 1.000000
-Kd 0.000000 0.000000 0.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 2
+map_Kd D:/Escritorio/9no/CGIH/Lab/Proyecto/ProyectoFinal/Textures/metalTubo.tga
