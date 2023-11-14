@@ -99,11 +99,11 @@ int main()
 
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.9f, 0.6f);
 
 
 	pinball_M = Model();
-	pinball_M.LoadModel("Models/pinballV3.obj");
+	pinball_M.LoadModel("Models/pinball.obj");
 	cristalPinball_M = Model();
 	cristalPinball_M.LoadModel("Models/cristal.obj");
 	resorte_M = Model();
@@ -215,10 +215,10 @@ int main()
 
 
 
-		// Resorte 
+		// Resorte  (falta acomodar y escalar correctamente)
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(29.0f, 27.0f, -20.5f));
-		model = glm::scale(model, glm::vec3((3.0f+escResorte), 1.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(99.0f, 17.0f, -60.5f));
+		model = glm::scale(model, glm::vec3((5.0f+escResorte), 5.0f, 5.0f));
 		model = glm::rotate(model, -30*toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -226,10 +226,10 @@ int main()
 		resorte_M.RenderModel();
 
 
-		// Palanca
+		// Palanca (falta acomodar y escalar correctamente)
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(31.0f, 26.5f, -20.5f));
-		model = glm::scale(model, glm::vec3(0.6f, 0.8f, 0.6f));
+		model = glm::translate(model, glm::vec3(101.0f, 16.5f, -60.5f));
+		model = glm::scale(model, glm::vec3(3.5f, 3.5f, 3.5f));
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -248,7 +248,7 @@ int main()
 
 
 
-		// Cristal traslucido maquina
+		// Cristal traslucido maquina (falta acomodar y escalar correctamente)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0f, 30.0f, -10.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
