@@ -4,6 +4,8 @@ Window::Window()
 {
 	width = 800;
 	height = 600;
+	animacionPalanca = false;
+
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -78,6 +80,7 @@ void Window::createCallbacks()
 {
 	glfwSetKeyCallback(mainWindow, ManejaTeclado);
 	glfwSetCursorPosCallback(mainWindow, ManejaMouse);
+	glfwSetMouseButtonCallback(mainWindow, ManejaMouseBoton);
 }
 GLfloat Window::getXChange()
 {
@@ -104,6 +107,8 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
+
+	
 
 	if (key >= 0 && key < 1024)
 	{
@@ -138,6 +143,16 @@ void Window::ManejaMouse(GLFWwindow* window, double xPos, double yPos)
 	theWindow->lastY = yPos;
 }
 
+void Window::ManejaMouseBoton(GLFWwindow* window, int button, int action, int mods)
+{
+	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
+	
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		theWindow->animacionPalanca = true;
+		//printf("se presiono la tecla ");
+	}
+}
 
 Window::~Window()
 {

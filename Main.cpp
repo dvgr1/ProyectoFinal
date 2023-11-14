@@ -38,9 +38,11 @@
 
 const float toRadians = 3.14159265f / 180.0f;
 
-// Variables
-float movresorte = 0.0f;
+// Variables de animación
+float movPalanca = 0.0f;
 float escResorte = 0.0f;
+
+
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
@@ -92,8 +94,6 @@ void CreateShaders()
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
-
-
 
 int main()
 {
@@ -216,7 +216,18 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		pinball_M.RenderModel();
 
+		// Animación palanca y resorte
 
+		if (mainWindow.getAnimacionPalanca() == true && movPalanca <= 7.5f)
+		{
+			movPalanca += 0.003f;
+			if (movPalanca > 7.5f)
+				mainWindow.setAnimacionPalanca(false);
+		}
+		else if (mainWindow.getAnimacionPalanca() == false && movPalanca >= 0.0f)
+		{
+			movPalanca -= 0.05f;
+		}
 
 		// Resorte
 		model = glm::mat4(1.0);
@@ -231,7 +242,7 @@ int main()
 
 		// Palanca 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(117.0f, 8.8f, -62.5f));
+		model = glm::translate(model, glm::vec3((117.0f+movPalanca), 8.8f, -62.5f));
 		model = glm::scale(model, glm::vec3(2.5f, 3.5f, 3.5f));
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -240,6 +251,8 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		palanca_M.RenderModel();
 
+
+		
 
 		//Canica 1
 		model = glm::mat4(1.0);

@@ -13,6 +13,8 @@ public:
 	GLfloat getBufferHeight() { return bufferHeight; }
 	GLfloat getXChange();
 	GLfloat getYChange();
+	GLboolean getAnimacionPalanca() { return animacionPalanca; }
+	GLvoid setAnimacionPalanca(bool activacion) { animacionPalanca = activacion; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -29,9 +31,11 @@ private:
 	GLfloat lastY;
 	GLfloat xChange;
 	GLfloat yChange;
+	GLboolean animacionPalanca;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
+	static void ManejaMouseBoton(GLFWwindow* window, int button, int action, int mods);
 
 };
 
