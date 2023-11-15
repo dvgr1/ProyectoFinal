@@ -38,9 +38,13 @@
 
 const float toRadians = 3.14159265f / 180.0f;
 
+
 // Variables de animación
 float movPalanca = 0.0f;
+float movResorte = 0.0f;
 float escResorte = 0.0f;
+float anguloResorte = 0.0f;
+
 
 
 
@@ -221,19 +225,49 @@ int main()
 		if (mainWindow.getAnimacionPalanca() == true && movPalanca <= 7.5f)
 		{
 			movPalanca += 0.003f;
+
+			if (movResorte < 5.5)  //Limita que tanto retrocede el resorte
+			{
+				movResorte += 0.003f;
+				escResorte -= 0.002f;
+				anguloResorte += 0.004f;
+			}
+
 			if (movPalanca > 7.5f)
 				mainWindow.setAnimacionPalanca(false);
 		}
-		else if (mainWindow.getAnimacionPalanca() == false && movPalanca >= 0.0f)
+		else if (mainWindow.getAnimacionPalanca() == false && movPalanca > 0.0f)
 		{
-			movPalanca -= 0.05f;
+			movPalanca -= 0.07f;
+			movResorte -= 0.07f;
+
+			if (movResorte <= 0.0f)
+			{
+				movResorte = 0.0f;
+				escResorte = 0.0f;
+				anguloResorte = 0.0f;
+			}
+
+			if (movPalanca <= 0.0f)
+			{
+				movPalanca = 0.0f;
+				movResorte = 0.0f;
+				escResorte = 0.0f;
+				anguloResorte = 0.0f;
+			}
+			escResorte += 0.04f;
+			anguloResorte -= 0.06f;
+
 		}
 
 		// Resorte
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(107.0f, 11.3f, -62.5f));
-		model = glm::scale(model, glm::vec3((5.0f+escResorte), 5.0f, 5.0f));
-		model = glm::rotate(model, -15*toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		if(movResorte < 5.5f)
+			model = glm::translate(model, glm::vec3((108.0f + movResorte), 11.1f, -62.5f));
+		else
+			model = glm::translate(model, glm::vec3((108.0f + movResorte), (11.4f), -62.5f));
+		model = glm::scale(model, glm::vec3((5.5f+escResorte), 5.0f, 5.0f));
+		model = glm::rotate(model, (-15+anguloResorte)*toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
