@@ -38,9 +38,15 @@
 
 const float toRadians = 3.14159265f / 180.0f;
 
-// Variables
-float movresorte = 0.0f;
+
+// Variables de animación
+float movPalanca = 0.0f;
+float movResorte = 0.0f;
 float escResorte = 0.0f;
+float anguloResorte = 0.0f;
+
+
+
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
@@ -56,6 +62,9 @@ Model pinball_M;
 Model cristalPinball_M;
 Model resorte_M;
 Model palanca_M;
+Model canica1_M;
+Model canica2_M;
+Model tuboTraslucido_M;
 
 Skybox skybox;
 
@@ -90,8 +99,6 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
-
-
 int main()
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
@@ -110,6 +117,12 @@ int main()
 	resorte_M.LoadModel("Models/resorte.obj");
 	palanca_M = Model();
 	palanca_M.LoadModel("Models/palanca.obj");
+	canica1_M = Model();
+	canica1_M.LoadModel("Models/canicaMetalica.obj");
+	canica2_M = Model();
+	canica2_M.LoadModel("Models/canicaMetalica.obj");
+	tuboTraslucido_M = Model();
+	tuboTraslucido_M.LoadModel("Models/tuboPlasticoAmarillo.obj");
 
 	// Skybox
 	std::vector<std::string> skyboxFaces;
@@ -198,12 +211,6 @@ int main()
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
 
-		//movresorte += 0.001f;
-		if (escResorte > -2.0f)
-			escResorte -= 0.0001f;
-			//escResorte = 0.0f;
-		if (movresorte == 1.0f)
-			movresorte = 0.0f;
 
 		// Maquina pinball
 		model = glm::mat4(1.0);
@@ -213,23 +220,64 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		pinball_M.RenderModel();
 
+		// Animación palanca y resorte
 
+		if (mainWindow.getAnimacionPalanca() == true && movPalanca <= 7.5f)
+		{
+			movPalanca += 0.003f;
 
-		// Resorte  (falta acomodar y escalar correctamente)
+			if (movResorte < 5.5)  //Limita que tanto retrocede el resorte
+			{
+				movResorte += 0.003f;
+				escResorte -= 0.002f;
+				anguloResorte += 0.004f;
+			}
+
+			if (movPalanca > 7.5f)
+				mainWindow.setAnimacionPalanca(false);
+		}
+		else if (mainWindow.getAnimacionPalanca() == false && movPalanca > 0.0f)
+		{
+			movPalanca -= 0.07f;
+			movResorte -= 0.07f;
+
+			if (movResorte <= 0.0f)
+			{
+				movResorte = 0.0f;
+				escResorte = 0.0f;
+				anguloResorte = 0.0f;
+			}
+
+			if (movPalanca <= 0.0f)
+			{
+				movPalanca = 0.0f;
+				movResorte = 0.0f;
+				escResorte = 0.0f;
+				anguloResorte = 0.0f;
+			}
+			escResorte += 0.04f;
+			anguloResorte -= 0.06f;
+
+		}
+
+		// Resorte
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(99.0f, 17.0f, -60.5f));
-		model = glm::scale(model, glm::vec3((5.0f+escResorte), 5.0f, 5.0f));
-		model = glm::rotate(model, -30*toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		if(movResorte < 5.5f)
+			model = glm::translate(model, glm::vec3((108.0f + movResorte), 11.1f, -62.5f));
+		else
+			model = glm::translate(model, glm::vec3((108.0f + movResorte), (11.4f), -62.5f));
+		model = glm::scale(model, glm::vec3((5.5f+escResorte), 5.0f, 5.0f));
+		model = glm::rotate(model, (-15+anguloResorte)*toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		resorte_M.RenderModel();
 
 
-		// Palanca (falta acomodar y escalar correctamente)
+		// Palanca 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(101.0f, 16.5f, -60.5f));
-		model = glm::scale(model, glm::vec3(3.5f, 3.5f, 3.5f));
+		model = glm::translate(model, glm::vec3((117.0f+movPalanca), 8.8f, -62.5f));
+		model = glm::scale(model, glm::vec3(2.5f, 3.5f, 3.5f));
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -238,25 +286,61 @@ int main()
 		palanca_M.RenderModel();
 
 
+		
 
-
-
-
-
-
-
-
-
-
-		// Cristal traslucido maquina (falta acomodar y escalar correctamente)
+		//Canica 1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f, 30.0f, -10.0f));
+		model = glm::translate(model, glm::vec3(98.0f, 14.5f, 34.0f));
+		//model = glm::translate(model, glm::vec3(18.0f, 28.5f, -63.0f));  //Aux para ver canica en tubo amarillo
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		canica1_M.RenderModel();
+
+		//Canica 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(98.0f, 14.5f, 42.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		canica2_M.RenderModel();
+
+
+
+
+
+
+
+
+
+		// Objetos traslucidos 
+		
+		// Tubo amarillo traslucido
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(12.0f, 30.0f, -63.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 4.0f, 4.7f));
+		model = glm::rotate(model, -7 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		//cristalPinball_M.RenderModel();
+		tuboTraslucido_M.RenderModel();
 		glDisable(GL_BLEND);
 
+
+		// Cristal traslucido maquina
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(10.0f, 29.0f, -10.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		cristalPinball_M.RenderModel();
+		glDisable(GL_BLEND);
+
+
+		
 
 		glUseProgram(0);
 
