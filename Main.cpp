@@ -39,13 +39,18 @@
 const float toRadians = 3.14159265f / 180.0f;
 
 
-// Variables de animación
+// Variables de animación palanca y resorte
 float movPalanca = 0.0f;
 float movResorte = 0.0f;
 float escResorte = 0.0f;
 float anguloResorte = 0.0f;
 
-
+// Variables de animacion canica 
+float movCanicax = 0.0f;
+float movCanicay = 0.0f;
+float movCanicaz = 0.0f;
+int contCanica = 0;
+float rotarCanica = 0.0f;
 
 
 Window mainWindow;
@@ -54,6 +59,9 @@ std::vector<Shader> shaderList;
 
 Camera camera;
 
+
+// Texturas
+Texture pisoTexture;
 
 
 
@@ -79,6 +87,8 @@ Model hongo_M;
 Model elipse_M;
 Model puente_M;
 Model edificio_M;
+
+Model avatar_M;
 
 Skybox skybox;
 
@@ -113,16 +123,44 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
+void CrearObjetos()
+{
+	unsigned int pisoIndices[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+
+	GLfloat pisoVertices[] = {
+		-10.0f, 0.0f, -10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		10.0f, 0.0f, -10.0f,	10.0f, 0.0f,	0.0f, -1.0f, 0.0f,
+		-10.0f, 0.0f, 10.0f,	0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
+		10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
+	};
+
+	Mesh* obj1 = new Mesh();
+	obj1->CreateMesh(pisoVertices, pisoIndices, 32, 12);
+	meshList.push_back(obj1);
+
+}
+
 int main()
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
 
 	CreateShaders();
+	CrearObjetos();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.9f, 0.6f);
 
 
+	// Texturas
+
+	pisoTexture = Texture("Textures/pisoMadera.jpg");
+	pisoTexture.LoadTextureA();
+
+
+	// Modelos
 	pinball_M = Model();
 	pinball_M.LoadModel("Models/pinball.obj");
 	cristalPinball_M = Model();
@@ -163,6 +201,9 @@ int main()
 	edificio_M = Model();
 	edificio_M.LoadModel("Models/Obstaculos/edificio.obj");
 
+	avatar_M = Model();
+	avatar_M.LoadModel("Models/personaje.obj");
+
 
 	// Skybox
 	std::vector<std::string> skyboxFaces;
@@ -179,28 +220,11 @@ int main()
 	Material_opaco = Material(0.3f, 4);
 
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.1f, 0.1f,
+		0.5f, 0.5f,
 		0.0f, 0.0f, -1.0f);
 
 	unsigned int pointLightCount = 0;
 
-	pointLights[0] = PointLight(1.0f, 0.0f, 1.0f,
-		5.0f, 3.0f,
-		-39.0f, 40.0f, -3.5f, 
-		0.3f, 0.2f, 0.1f);
-	pointLightCount++;
-
-	pointLights[1] = PointLight(1.0f, 0.0f, 0.0f,
-		5.0f, 3.0f,
-		-59.0f, 42.5f, 11.0f, 
-		0.3f, 0.2f, 0.1f);
-	pointLightCount++;
-
-	pointLights[2] = PointLight(0.0f, 1.0f, 0.0f,
-		5.0f, 3.0f,
-		-54.0f, 41.5f, -15.5f,
-		0.3f, 0.2f, 0.1f);
-	pointLightCount++;
 
 	unsigned int spotLightCount = 0;
 	//linterna
@@ -210,30 +234,6 @@ int main()
 		0.0f, -1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
 		5.0f);
-	spotLightCount++;
-
-	spotLights[1] = SpotLight(0.0f, 0.0f, 1.0f,
-		0.0f, 2.0f,
-		120.0f, 20.0f, -2.5f,
-		-1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		15.0f);
-	spotLightCount++;
-
-	spotLights[2] = SpotLight(0.0f, 1.0f, 1.0f,
-		0.0f, 2.0f,
-		-10.0f, 30.0f, -60.0f,
-		0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f,
-		15.0f);
-	spotLightCount++;
-
-	spotLights[3] = SpotLight(1.0f, 0.0f, 1.0f,
-		0.0f, 2.0f,
-		-10.0f, 30.0f, 55.0f,
-		0.0f, 0.0f, -1.0f,
-		1.0f, 0.0f, 0.0f,
-		15.0f);
 	spotLightCount++;
 
 
@@ -291,6 +291,17 @@ int main()
 		glm::mat4 modelaux(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
+
+
+		// Piso
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, -143.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(50.0f, 1.0f, 50.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		pisoTexture.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[0]->RenderMesh();
 
 
 		// Maquina pinball
@@ -371,9 +382,9 @@ int main()
 
 		//Canica 1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(98.0f, 14.5f, 34.0f));
-		//model = glm::translate(model, glm::vec3(18.0f, 28.5f, -63.0f));  //Aux para ver canica en tubo amarillo
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::translate(model, glm::vec3((98.0f+movCanicax), (14.5f+movCanicay), (34.0f+movCanicaz)));
+		model = glm::scale(model, glm::vec3(3.2f, 3.2f, 3.2f));
+		model = glm::rotate(model, rotarCanica * toRadians, glm::vec3(1.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -388,6 +399,36 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		canica2_M.RenderModel();
 
+		// Animacion canica
+		if (mainWindow.getAnimacionCanica() == true)
+		{
+			rotarCanica += 5.0f;
+
+			if (movCanicaz > -96 && mainWindow.getAnimacionPalanca())  //Mueve la canica hasta el resorte
+			{
+				movCanicaz -= 0.16;
+			}
+			else if (movCanicaz <= -96 && mainWindow.getAnimacionPalanca())   // La canica baja hasta que la animacion de la palanca termina
+			{
+				movCanicax += 0.003;
+				movCanicay -= 0.0008;
+				rotarCanica = 0.0f;
+			}
+			else if (movPalanca <= 0.0f && mainWindow.getAnimacionPalanca() == false)
+			{
+				if (movCanicax >= -180)   //La canica sube hasta el final del tubo
+				{
+					movCanicax -= 0.5f;
+					movCanicay += 0.087;
+				}
+			}
+			else if(movCanicax >= -400)
+			{
+				movCanicaz += 0.02f;
+				movCanicay += 0.03f;
+				movCanicax -= 0.04f;
+			}
+		}
 
 		//OBSTACULOS RICARDO
 		/////////////////////////////////////////////////////PALANCAS
@@ -395,7 +436,6 @@ int main()
 		model = glm::translate(model, glm::vec3(85.0f, 15.5f, 22.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
-		model = glm::rotate(model, (0 + mainWindow.getmoverpalanca01()) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -405,21 +445,10 @@ int main()
 		model = glm::translate(model, glm::vec3(85.0, 15.5f, -28.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
-		model = glm::rotate(model, (0 + mainWindow.getmoverpalanca02()) * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		palanca_golpe_DER_M.RenderModel();
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-23.0f, 39.0f, 15.0f));
-		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
-		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
-		model = glm::rotate(model, (0 + mainWindow.getmoverpalanca03()) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		palanca_golpe_IZQ_M.RenderModel();
 
 		///////////////////////////////////////////////// L
 
@@ -496,8 +525,8 @@ int main()
 		/////////////////////////////////////////////////////ECLIPSE
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-50.0f, 40.0f, 25.5f));
-		model = glm::scale(model, glm::vec3(1.5f, 0.7f, 1.5f));
+		model = glm::translate(model, glm::vec3(-50.0f, 41.0f, 25.5f));
+		model = glm::scale(model, glm::vec3(1.5f, 0.9f, 1.5f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -505,8 +534,8 @@ int main()
 		eclipce_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-50.0f, 40.0f, -30.5f));
-		model = glm::scale(model, glm::vec3(1.5f, 0.7f, 1.5f));
+		model = glm::translate(model, glm::vec3(-50.0f, 41.0f, -30.5f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.5f));
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, 190 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -518,7 +547,7 @@ int main()
 
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-37.0f, 38.0f, -3.5f));
+		model = glm::translate(model, glm::vec3(-35.0f, 37.0f, -2.5f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -528,7 +557,7 @@ int main()
 
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-57.0f, 41.5f, 11.0f));
+		model = glm::translate(model, glm::vec3(-55.0f, 40.5f, 11.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -537,7 +566,7 @@ int main()
 		hongo_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-52.0f, 40.5f, -15.5f));
+		model = glm::translate(model, glm::vec3(-50.0f, 40.0f, -15.5f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -602,6 +631,17 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		bandera_azul_M.RenderModel();
+
+		
+		// Avatar sin texturas 
+		/*model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 14.8f, -15.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		avatar_M.RenderModel();*/
+
 
 
 		// Objetos traslucidos 
