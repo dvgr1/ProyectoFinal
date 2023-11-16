@@ -5,6 +5,9 @@ Window::Window()
 	width = 800;
 	height = 600;
 	animacionPalanca = false;
+	moverpalanca01 = 0;
+	moverpalanca02 = 0;
+	moverpalanca03 = 0;
 
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -108,6 +111,39 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 
+	if (key == GLFW_KEY_Z)
+	{
+		if (action == GLFW_PRESS) {
+			theWindow->moverpalanca01 = 60.0;
+		}
+		// Si la tecla Z se libera, establece el valor de moverpalanca01 en 0.0
+		else if (action == GLFW_RELEASE) {
+			theWindow->moverpalanca01 = 0.0;
+		}
+	}
+
+	if (key == GLFW_KEY_M)
+	{
+		if (action == GLFW_PRESS) {
+			theWindow->moverpalanca02 = 60.0;
+		}
+		// Si la tecla Z se libera, establece el valor de moverpalanca01 en 0.0
+		else if (action == GLFW_RELEASE) {
+			theWindow->moverpalanca02 = 0.0;
+		}
+	}
+
+	if (key == GLFW_KEY_V)
+	{
+		if (action == GLFW_PRESS) {
+			theWindow->moverpalanca03 = 60.0;
+		}
+		// Si la tecla Z se libera, establece el valor de moverpalanca01 en 0.0
+		else if (action == GLFW_RELEASE) {
+			theWindow->moverpalanca03 = 0.0;
+		}
+	}
+	
 	
 
 	if (key >= 0 && key < 1024)
