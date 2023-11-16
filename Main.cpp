@@ -44,6 +44,7 @@ float movPalanca = 0.0f;
 float movResorte = 0.0f;
 float escResorte = 0.0f;
 float anguloResorte = 0.0f;
+
 // Variables de animacion canica 
 float movCanicax = 0.0f;
 float movCanicay = 0.0f;
@@ -58,8 +59,10 @@ std::vector<Shader> shaderList;
 
 Camera camera;
 
+
 // Texturas
 Texture pisoTexture;
+
 
 
 // Modelos
@@ -71,7 +74,19 @@ Model canica1_M;
 Model canica2_M;
 Model tuboTraslucido_M;
 
-
+//Ricardo 
+Model palanca_golpe_DER_M;
+Model palanca_golpe_IZQ_M;
+Model obstaculo_L_M;
+Model obstaculo_C_M;
+Model circulos_M;
+Model bandera_roja_M;
+Model bandera_azul_M;
+Model eclipce_M;
+Model hongo_M;
+Model elipse_M;
+Model puente_M;
+Model edificio_M;
 
 Model avatar_M;
 
@@ -138,6 +153,7 @@ int main()
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.9f, 0.6f);
 
+
 	// Texturas
 
 	pisoTexture = Texture("Textures/pisoMadera.jpg");
@@ -159,11 +175,35 @@ int main()
 	canica2_M.LoadModel("Models/canicaMetalica.obj");
 	tuboTraslucido_M = Model();
 	tuboTraslucido_M.LoadModel("Models/tuboPlasticoAmarillo.obj");
-
-
+	//Ricardo
+	palanca_golpe_IZQ_M = Model();
+	palanca_golpe_IZQ_M.LoadModel("Models/Obstaculos/palanca_golpe_IZQ.obj");
+	palanca_golpe_DER_M = Model();
+	palanca_golpe_DER_M.LoadModel("Models/Obstaculos/palanca_golpe_DER.obj");
+	obstaculo_L_M = Model();
+	obstaculo_L_M.LoadModel("Models/Obstaculos/L.obj");
+	obstaculo_C_M = Model();
+	obstaculo_C_M.LoadModel("Models/Obstaculos/C.obj");
+	circulos_M = Model();
+	circulos_M.LoadModel("Models/Obstaculos/circulos.obj");
+	bandera_roja_M = Model();
+	bandera_roja_M.LoadModel("Models/Obstaculos/bandera_roja.obj");
+	bandera_azul_M = Model();
+	bandera_azul_M.LoadModel("Models/Obstaculos/bandera_azul.obj");
+	eclipce_M = Model();
+	eclipce_M.LoadModel("Models/Obstaculos/eclipce.obj");
+	hongo_M = Model();
+	hongo_M.LoadModel("Models/Obstaculos/hongo.obj");
+	elipse_M = Model();
+	elipse_M.LoadModel("Models/Obstaculos/elipse.obj");
+	puente_M = Model();
+	puente_M.LoadModel("Models/Obstaculos/puente.obj");
+	edificio_M = Model();
+	edificio_M.LoadModel("Models/Obstaculos/edificio.obj");
 
 	avatar_M = Model();
 	avatar_M.LoadModel("Models/personaje.obj");
+
 
 	// Skybox
 	std::vector<std::string> skyboxFaces;
@@ -263,6 +303,7 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[0]->RenderMesh();
 
+
 		// Maquina pinball
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0f, 30.0f, -10.0f));
@@ -337,10 +378,11 @@ int main()
 		palanca_M.RenderModel();
 
 
+		
 
 		//Canica 1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3((98.0f + movCanicax), (14.5f + movCanicay), (34.0f + movCanicaz)));
+		model = glm::translate(model, glm::vec3((98.0f+movCanicax), (14.5f+movCanicay), (34.0f+movCanicaz)));
 		model = glm::scale(model, glm::vec3(3.2f, 3.2f, 3.2f));
 		model = glm::rotate(model, rotarCanica * toRadians, glm::vec3(1.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -350,7 +392,7 @@ int main()
 
 		//Canica 2
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(98.0f, 14.5f, 42.0f));
+		model = glm::translate(model, glm::vec3(-99.0f, 60.0f, -2.5f));
 		model = glm::scale(model, glm::vec3(3.2f, 3.2f, 3.2f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -380,7 +422,7 @@ int main()
 					movCanicay += 0.087;
 				}
 			}
-			else if (movCanicax >= -400)
+			else if(movCanicax >= -400)
 			{
 				movCanicaz += 0.02f;
 				movCanicay += 0.03f;
@@ -388,7 +430,209 @@ int main()
 			}
 		}
 
+		//OBSTACULOS RICARDO
+		/////////////////////////////////////////////////////PALANCAS
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(85.0f, 15.5f, 22.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		palanca_golpe_IZQ_M.RenderModel();
 
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(85.0, 15.5f, -28.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		palanca_golpe_DER_M.RenderModel();
+
+		///////////////////////////////////////////////// L
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(62.0f, 18.0f, 40.0f));
+		model = glm::scale(model, glm::vec3(1.7, 0.5, 1.2));
+		model = glm::rotate(model, 20 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		obstaculo_L_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(62.0f, 17.5f, -45.0f));
+		model = glm::scale(model, glm::vec3(1.7, 0.5, 1.2));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 20 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		obstaculo_L_M.RenderModel();
+
+		///////////////////////////////////////////////////// C
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(48.0f, 20.5f, 30.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 0.8f, 2.0f));
+		model = glm::rotate(model, 12 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		obstaculo_C_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(48.0f, 20.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 0.8f, 2.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 12 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		obstaculo_C_M.RenderModel();
+
+		////////////////////////////////////////////////////////// CIRCULOS
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(30.0f, 29.5f, 25.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 2.0f, 2.0f));
+		model = glm::rotate(model, 6 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		circulos_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(30.0f, 29.5f, -30.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 2.0f, 2.0f));
+		model = glm::rotate(model, 6 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		circulos_M.RenderModel();
+
+		//////////////////////////////////////////////////// PUENTE
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-49.0f, 43.2f, -2.5f));
+		model = glm::scale(model, glm::vec3(1.65f, 1.6f, 1.55f));
+		model = glm::rotate(model, 13 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		puente_M.RenderModel();
+
+		/////////////////////////////////////////////////////ECLIPSE
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-50.0f, 41.0f, 25.5f));
+		model = glm::scale(model, glm::vec3(1.5f, 0.9f, 1.5f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		eclipce_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-50.0f, 41.0f, -30.5f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.5f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 190 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		eclipce_M.RenderModel();
+
+		///////////////////////////////////////////////////////HONGO
+
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-35.0f, 37.0f, -2.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		hongo_M.RenderModel();
+
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-55.0f, 40.5f, 11.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		hongo_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-50.0f, 40.0f, -15.5f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		hongo_M.RenderModel();
+
+		//////////////////////////////////////////////////////////ELIPSES
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-80.0f, 46.0f, -8.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.5f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		elipse_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-80.0f, 46.0f, 5.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.5f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		elipse_M.RenderModel();
+
+		//////////////////////////////////////////////////EDIFICIOS
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(30.0f, 22.8f, 13.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		edificio_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(30.0f, 22.8f, -18.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		edificio_M.RenderModel();
+
+		///////////////////////////////////////////////////BANDERAS
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 14.8f, 10.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		bandera_roja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 14.8f, -15.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		bandera_azul_M.RenderModel();
+
+		
 		// Avatar sin texturas 
 		/*model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(70.0f, 14.8f, -15.0f));
@@ -397,6 +641,7 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		avatar_M.RenderModel();*/
+
 
 
 		// Objetos traslucidos 
