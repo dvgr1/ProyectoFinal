@@ -1,5 +1,5 @@
 # 3ds Max Wavefront OBJ Exporter v0.99 - (c)2007 guruware
-# File Created: 16.11.2023 01:41:18
+# File Created: 16.11.2023 02:43:14
 
 newmtl bandera_default
 	Ns 10.0000
@@ -12,5 +12,5 @@ newmtl bandera_default
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka maps\Textura_01.jpg
-	map_Kd maps\Textura_01.jpg
+	map_Ka D:\Documentos\Texturas_R\Textura_01.jpg
+	map_Kd D:\Documentos\Texturas_R\Textura_01.jpg

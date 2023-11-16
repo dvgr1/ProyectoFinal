@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.99 - (c)2007 guruware
-# File Created: 16.11.2023 02:04:19
+# File Created: 16.11.2023 14:23:00
 
-newmtl 08___Default
+newmtl C_Material__0
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -12,5 +12,5 @@ newmtl 08___Default
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka maps\Textura_05.jpg
-	map_Kd maps\Textura_05.jpg
+	map_Ka D:\Documentos\Facultad Ingenieria\Computacion Grafica Lab\Programas\ProyectoFinal-Ricardo\Textures\descargar.jpeg
+	map_Kd D:\Documentos\Facultad Ingenieria\Computacion Grafica Lab\Programas\ProyectoFinal-Ricardo\Textures\descargar.jpeg
