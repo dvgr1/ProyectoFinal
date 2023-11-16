@@ -58,7 +58,8 @@ std::vector<Shader> shaderList;
 
 Camera camera;
 
-
+// Texturas
+Texture pisoTexture;
 
 
 // Modelos
@@ -69,6 +70,10 @@ Model palanca_M;
 Model canica1_M;
 Model canica2_M;
 Model tuboTraslucido_M;
+
+
+
+Model avatar_M;
 
 Skybox skybox;
 
@@ -103,16 +108,43 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
+void CrearObjetos()
+{
+	unsigned int pisoIndices[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+
+	GLfloat pisoVertices[] = {
+		-10.0f, 0.0f, -10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		10.0f, 0.0f, -10.0f,	10.0f, 0.0f,	0.0f, -1.0f, 0.0f,
+		-10.0f, 0.0f, 10.0f,	0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
+		10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
+	};
+
+	Mesh* obj1 = new Mesh();
+	obj1->CreateMesh(pisoVertices, pisoIndices, 32, 12);
+	meshList.push_back(obj1);
+
+}
+
 int main()
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
 
 	CreateShaders();
+	CrearObjetos();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.9f, 0.6f);
 
+	// Texturas
 
+	pisoTexture = Texture("Textures/pisoMadera.jpg");
+	pisoTexture.LoadTextureA();
+
+
+	// Modelos
 	pinball_M = Model();
 	pinball_M.LoadModel("Models/pinball.obj");
 	cristalPinball_M = Model();
@@ -127,6 +159,11 @@ int main()
 	canica2_M.LoadModel("Models/canicaMetalica.obj");
 	tuboTraslucido_M = Model();
 	tuboTraslucido_M.LoadModel("Models/tuboPlasticoAmarillo.obj");
+
+
+
+	avatar_M = Model();
+	avatar_M.LoadModel("Models/personaje.obj");
 
 	// Skybox
 	std::vector<std::string> skyboxFaces;
@@ -216,6 +253,16 @@ int main()
 		glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
 
 
+		// Piso
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, -143.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(50.0f, 1.0f, 50.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		pisoTexture.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[0]->RenderMesh();
+
 		// Maquina pinball
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0f, 30.0f, -10.0f));
@@ -290,13 +337,11 @@ int main()
 		palanca_M.RenderModel();
 
 
-		
 
 		//Canica 1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3((98.0f+movCanicax), (14.5f+movCanicay), (34.0f+movCanicaz)));
-		//model = glm::translate(model, glm::vec3(18.0f, 28.5f, -63.0f));  //Aux para ver canica en tubo amarillo
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::translate(model, glm::vec3((98.0f + movCanicax), (14.5f + movCanicay), (34.0f + movCanicaz)));
+		model = glm::scale(model, glm::vec3(3.2f, 3.2f, 3.2f));
 		model = glm::rotate(model, rotarCanica * toRadians, glm::vec3(1.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -306,44 +351,52 @@ int main()
 		//Canica 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(98.0f, 14.5f, 42.0f));
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::scale(model, glm::vec3(3.2f, 3.2f, 3.2f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		canica2_M.RenderModel();
 
-
-		if (mainWindow.getAnimacionPalanca() == true && contCanica == 0 || mainWindow.getAnimacionPalanca() == false && contCanica == 0)
+		// Animacion canica
+		if (mainWindow.getAnimacionCanica() == true)
 		{
-			if (movCanicaz > -96)
+			rotarCanica += 5.0f;
+
+			if (movCanicaz > -96 && mainWindow.getAnimacionPalanca())  //Mueve la canica hasta el resorte
 			{
 				movCanicaz -= 0.16;
-				rotarCanica += 10;
 			}
-			else if (movPalanca <= 0.0f && mainWindow.getAnimacionPalanca() == false)
-			{
-				if (movCanicax >= -180)
-				{
-					movCanicax -= 0.5f;
-					movCanicay += 0.09;
-					rotarCanica += 10.0;
-				}
-				else
-				{
-					movCanicaz += 0.3f;
-				}
-			}
-			else if (movCanicaz <= -96 && movPalanca < 7.5 || mainWindow.getAnimacionPalanca())
+			else if (movCanicaz <= -96 && mainWindow.getAnimacionPalanca())   // La canica baja hasta que la animacion de la palanca termina
 			{
 				movCanicax += 0.003;
 				movCanicay -= 0.0008;
+				rotarCanica = 0.0f;
 			}
-			
+			else if (movPalanca <= 0.0f && mainWindow.getAnimacionPalanca() == false)
+			{
+				if (movCanicax >= -180)   //La canica sube hasta el final del tubo
+				{
+					movCanicax -= 0.5f;
+					movCanicay += 0.087;
+				}
+			}
+			else if (movCanicax >= -400)
+			{
+				movCanicaz += 0.02f;
+				movCanicay += 0.03f;
+				movCanicax -= 0.04f;
+			}
 		}
 
 
-
-
+		// Avatar sin texturas 
+		/*model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 14.8f, -15.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		avatar_M.RenderModel();*/
 
 
 		// Objetos traslucidos 
