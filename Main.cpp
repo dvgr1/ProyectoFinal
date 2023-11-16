@@ -179,11 +179,28 @@ int main()
 	Material_opaco = Material(0.3f, 4);
 
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.5f, 0.5f,
+		0.1f, 0.1f,
 		0.0f, 0.0f, -1.0f);
 
 	unsigned int pointLightCount = 0;
 
+	pointLights[0] = PointLight(1.0f, 0.0f, 1.0f,
+		5.0f, 3.0f,
+		-39.0f, 40.0f, -3.5f, 
+		0.3f, 0.2f, 0.1f);
+	pointLightCount++;
+
+	pointLights[1] = PointLight(1.0f, 0.0f, 0.0f,
+		5.0f, 3.0f,
+		-59.0f, 42.5f, 11.0f, 
+		0.3f, 0.2f, 0.1f);
+	pointLightCount++;
+
+	pointLights[2] = PointLight(0.0f, 1.0f, 0.0f,
+		5.0f, 3.0f,
+		-54.0f, 41.5f, -15.5f,
+		0.3f, 0.2f, 0.1f);
+	pointLightCount++;
 
 	unsigned int spotLightCount = 0;
 	//linterna
@@ -193,6 +210,30 @@ int main()
 		0.0f, -1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
 		5.0f);
+	spotLightCount++;
+
+	spotLights[1] = SpotLight(0.0f, 0.0f, 1.0f,
+		0.0f, 2.0f,
+		120.0f, 20.0f, -2.5f,
+		-1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		15.0f);
+	spotLightCount++;
+
+	spotLights[2] = SpotLight(0.0f, 1.0f, 1.0f,
+		0.0f, 2.0f,
+		-10.0f, 30.0f, -60.0f,
+		0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f,
+		15.0f);
+	spotLightCount++;
+
+	spotLights[3] = SpotLight(1.0f, 0.0f, 1.0f,
+		0.0f, 2.0f,
+		-10.0f, 30.0f, 55.0f,
+		0.0f, 0.0f, -1.0f,
+		1.0f, 0.0f, 0.0f,
+		15.0f);
 	spotLightCount++;
 
 
@@ -354,6 +395,7 @@ int main()
 		model = glm::translate(model, glm::vec3(85.0f, 15.5f, 22.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		model = glm::rotate(model, (0 + mainWindow.getmoverpalanca01()) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -363,10 +405,21 @@ int main()
 		model = glm::translate(model, glm::vec3(85.0, 15.5f, -28.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		model = glm::rotate(model, (0 + mainWindow.getmoverpalanca02()) * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		palanca_golpe_DER_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-23.0f, 39.0f, 15.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
+		model = glm::rotate(model, (0 + mainWindow.getmoverpalanca03()) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		palanca_golpe_IZQ_M.RenderModel();
 
 		///////////////////////////////////////////////// L
 
@@ -443,8 +496,8 @@ int main()
 		/////////////////////////////////////////////////////ECLIPSE
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-50.0f, 41.0f, 25.5f));
-		model = glm::scale(model, glm::vec3(1.5f, 0.9f, 1.5f));
+		model = glm::translate(model, glm::vec3(-50.0f, 40.0f, 25.5f));
+		model = glm::scale(model, glm::vec3(1.5f, 0.7f, 1.5f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -452,8 +505,8 @@ int main()
 		eclipce_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-50.0f, 41.0f, -30.5f));
-		model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.5f));
+		model = glm::translate(model, glm::vec3(-50.0f, 40.0f, -30.5f));
+		model = glm::scale(model, glm::vec3(1.5f, 0.7f, 1.5f));
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, 190 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -465,7 +518,7 @@ int main()
 
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-35.0f, 37.0f, -2.5f));
+		model = glm::translate(model, glm::vec3(-37.0f, 38.0f, -3.5f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -475,7 +528,7 @@ int main()
 
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-55.0f, 40.5f, 11.0f));
+		model = glm::translate(model, glm::vec3(-57.0f, 41.5f, 11.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -484,7 +537,7 @@ int main()
 		hongo_M.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-50.0f, 40.0f, -15.5f));
+		model = glm::translate(model, glm::vec3(-52.0f, 40.5f, -15.5f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -549,23 +602,6 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		bandera_azul_M.RenderModel();
-
-		
-
-		
-
-		
-
-		
-
-		
-
-		
-
-
-
-
-
 
 
 		// Objetos traslucidos 
