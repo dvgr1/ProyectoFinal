@@ -39,13 +39,17 @@
 const float toRadians = 3.14159265f / 180.0f;
 
 
-// Variables de animación
+// Variables de animación palanca y resorte
 float movPalanca = 0.0f;
 float movResorte = 0.0f;
 float escResorte = 0.0f;
 float anguloResorte = 0.0f;
-
-
+// Variables de animacion canica 
+float movCanicax = 0.0f;
+float movCanicay = 0.0f;
+float movCanicaz = 0.0f;
+int contCanica = 0;
+float rotarCanica = 0.0f;
 
 
 Window mainWindow;
@@ -290,9 +294,10 @@ int main()
 
 		//Canica 1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(98.0f, 14.5f, 34.0f));
+		model = glm::translate(model, glm::vec3((98.0f+movCanicax), (14.5f+movCanicay), (34.0f+movCanicaz)));
 		//model = glm::translate(model, glm::vec3(18.0f, 28.5f, -63.0f));  //Aux para ver canica en tubo amarillo
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::rotate(model, rotarCanica * toRadians, glm::vec3(1.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -308,7 +313,33 @@ int main()
 		canica2_M.RenderModel();
 
 
-
+		if (mainWindow.getAnimacionPalanca() == true && contCanica == 0 || mainWindow.getAnimacionPalanca() == false && contCanica == 0)
+		{
+			if (movCanicaz > -96)
+			{
+				movCanicaz -= 0.16;
+				rotarCanica += 10;
+			}
+			else if (movPalanca <= 0.0f && mainWindow.getAnimacionPalanca() == false)
+			{
+				if (movCanicax >= -180)
+				{
+					movCanicax -= 0.5f;
+					movCanicay += 0.09;
+					rotarCanica += 10.0;
+				}
+				else
+				{
+					movCanicaz += 0.3f;
+				}
+			}
+			else if (movCanicaz <= -96 && movPalanca < 7.5 || mainWindow.getAnimacionPalanca())
+			{
+				movCanicax += 0.003;
+				movCanicay -= 0.0008;
+			}
+			
+		}
 
 
 
