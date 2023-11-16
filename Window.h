@@ -15,6 +15,9 @@ public:
 	GLfloat getYChange();
 	GLboolean getAnimacionPalanca() { return animacionPalanca; }
 	GLvoid setAnimacionPalanca(bool activacion) { animacionPalanca = activacion; }
+	GLint getmoverpalanca01() { return moverpalanca01; }
+	GLint getmoverpalanca02() { return moverpalanca02; }
+	GLint getmoverpalanca03() { return moverpalanca03; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -31,6 +34,10 @@ private:
 	GLfloat lastY;
 	GLfloat xChange;
 	GLfloat yChange;
+	GLint moverpalanca01 = 0;
+	GLint moverpalanca02 = 0;
+	GLint moverpalanca03 = 0;
+	
 	GLboolean animacionPalanca;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
