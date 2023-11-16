@@ -15,6 +15,8 @@ public:
 	GLfloat getYChange();
 	GLboolean getAnimacionPalanca() { return animacionPalanca; }
 	GLvoid setAnimacionPalanca(bool activacion) { animacionPalanca = activacion; }
+	GLboolean getAnimacionCanica() { return animacionCanica; }
+	GLvoid setAnimacionCanica(bool activacion) { animacionCanica = activacion; }
 	GLint getmoverpalanca01() { return moverpalanca01; }
 	GLint getmoverpalanca02() { return moverpalanca02; }
 	GLint getmoverpalanca03() { return moverpalanca03; }
@@ -39,6 +41,7 @@ private:
 	GLint moverpalanca03 = 0;
 	
 	GLboolean animacionPalanca;
+	GLboolean animacionCanica;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);

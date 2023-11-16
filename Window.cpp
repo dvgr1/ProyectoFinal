@@ -186,6 +186,7 @@ void Window::ManejaMouseBoton(GLFWwindow* window, int button, int action, int mo
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 	{
 		theWindow->animacionPalanca = true;
+		theWindow->animacionCanica = true;
 		//printf("se presiono la tecla ");
 	}
 }
