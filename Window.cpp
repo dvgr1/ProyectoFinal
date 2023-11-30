@@ -8,6 +8,12 @@ Window::Window()
 	moverpalanca01 = 0;
 	moverpalanca02 = 0;
 	moverpalanca03 = 0;
+	luzPaletas = true;
+	luzTablero = true;
+	musica = false;
+	cambioCamara = false;
+	camaraLibre = false;
+	subir = true;
 
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -144,6 +150,31 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		}
 	}
 	
+
+	if (key == GLFW_KEY_P && action == GLFW_PRESS)
+	{
+		theWindow->luzPaletas = !(theWindow->luzPaletas);
+	}
+
+	if (key == GLFW_KEY_T && action == GLFW_PRESS)
+	{
+		theWindow->luzTablero = !(theWindow->luzTablero);
+	}
+
+	if (key == GLFW_KEY_G && action == GLFW_PRESS)
+	{
+		theWindow->musica = !(theWindow->musica);
+	}
+
+	if (key == GLFW_KEY_H && action == GLFW_PRESS)
+	{
+		theWindow->cambioCamara = !(theWindow->cambioCamara);
+	}
+	
+	if (key == GLFW_KEY_J && action == GLFW_PRESS)
+	{
+		theWindow->camaraLibre = !(theWindow->camaraLibre);
+	}
 	
 
 	if (key >= 0 && key < 1024)
