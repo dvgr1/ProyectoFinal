@@ -12,5 +12,5 @@ newmtl 03___Default
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Textures/maps/Textura_03.jpg
-	map_Kd Textures/maps/Textura_03.jpg
+	map_Ka Textura_03.jpg
+	map_Kd Textura_03.jpg
